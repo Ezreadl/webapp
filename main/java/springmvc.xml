@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-4.3.xsd
+  	http://www.springframework.org/schema/tx 
+    http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+    http://www.springframework.org/schema/aop 
+    http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+    http://www.springframework.org/schema/mvc 
+    http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd">
+    
+    
+    <!-- 扫描web层对象 -->
+	<context:component-scan base-package="com.qm.**.web"/>
+
+	<!-- 注解扫描驱动 -->
+	<mvc:annotation-driven />
+
+	<!-- 默认处理器 -->
+	<mvc:default-servlet-handler />
+
+
+	<!-- 视图解析器 -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/view/" />
+		<property name="suffix" value=".html" />
+	</bean>
+	
+	<!--  拦截器  -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**"/>
+			<mvc:exclude-mapping path="/awesome/**"/>
+			<mvc:exclude-mapping path="/css/**"/>
+			<mvc:exclude-mapping path="/plugins/**"/>			
+			<mvc:exclude-mapping path="/images/**"/>
+			<mvc:exclude-mapping path="/js/**"/>
+			<mvc:exclude-mapping path="/scripts/**"/>			
+			<mvc:exclude-mapping path="/jsp/**"/>
+			<mvc:exclude-mapping path="/datas/**"/>
+			<mvc:exclude-mapping path="/mergely/**"/>
+			<mvc:exclude-mapping path="/view/**"/>
+			<mvc:exclude-mapping path="/login.html"/>
+			<mvc:exclude-mapping path="/Login/loginValidate"/>
+			<mvc:exclude-mapping path="/Login/invalidate"/>
+			<bean class="com.qm.core.base.LoginInterceptor"/>
+		</mvc:interceptor>
+	</mvc:interceptors> 
+	<mvc:annotation-driven>
+	     <mvc:message-converters>
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter"/>
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>application/json;charset=UTF-8</value>
+                    </list>
+                </property>
+            </bean>
+	   </mvc:message-converters>
+	</mvc:annotation-driven>
+
+	<!-- 自定义异常处理类 -->
+	<bean id="exceptionHandler" class="com.qm.core.base.GlobalExceptionHandler"/>
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="10485760" />
+		<property name="defaultEncoding" value="UTF-8"></property>
+	</bean>
+</beans>
